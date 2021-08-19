@@ -44,20 +44,115 @@ time.sleep(10)
 #driver.find_element_by_class_name('all').click()
 driver.find_element_by_xpath('//button[normalize-space()="View Sales"]').click()
 
+import datetime
+if driver.find_elements_by_class_name('all'):
+    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+time.sleep(5)
+soup = BeautifulSoup(driver.page_source,'html5lib')
 
-soup = BeautifulSoup(driver.page_source,"lxml")
+table = soup.find_all('table')
+table_top = pd.read_html(str(table))[0]
 
-table = soup.find('table', attrs={'class':'subs noBorders evenRows'})
-table_rows = table.find_all('tr')
-driver.quit()
-df = []
-for tr in table_rows:
-    td = tr.find_all('td')
-    row = [tr.text for tr in td]
-    df.append(row)
-pd.DataFrame(df, columns=["Date", "Time","Size", "Sale Price"])
-df
+if driver.find_elements_by_class_name('all'):
+        table_top.drop_duplicates(subset='Size', keep="first")
+        vola = soup.findAll(class_="value")
+        date = soup.findAll(class_="detail")
+        text=str(date)
+        new_vola=str(vola)
+        x = re.findall('[0-9]+', new_vola)
+        re.sub("span", "", str(x))
+        re.sub("class", "", str(x))
+        re.sub("<", "", str(x))
+        re.sub(">", "", str(x))
+        re.sub("value", "", str(x))
+        re.sub("/", "", str(x))
+        re.sub("-", "", str(x))
+        def numConcat(num1, num2):
+       
+        # Convert both the numbers to
+        # strings
+            num1 = str(num1)
+            num2 = str(num2)
+          
+        # Concatenate the strings
+            num1 += num2
+          
+            return int(num1)
+        one=(x[2])
+        two=(x[3])
+        comb_vola=(numConcat(one, two))/100
+        print(comb_vola)
+        y= re.findall('[0-9]+', text)
+        print(y)
+        loc_year=y.index("2020")
+        loc_month=(loc_year-2)
+        loc_day=(loc_year-1)
+        year=y[(loc_year)]
+        month=y[(loc_month)]
+        day=y[(loc_day)]
+        
+        reldate= '-'.join([str(num) for num in [month, day, year]])
+        now_date= table_top.loc[1,"Date"]
+        now_month = now_date.split(' ')[1]
+        now_month1 = now_month[0:3]
+        now_day=now_date.split(' ')[2]
+        now_day = now_day.replace(',','')
+        now_year=now_date.split(' ')[3]
+        nowcomb_date=now_month1+ " " +now_day+ " "+now_year
 
+        date_time_obj = datetime.datetime.strptime(nowcomb_date, '%b %d %Y')
+        print(date_time_obj.date())
+
+
+        #date =find_date('view-source:https://stockx.com/air-jordan-1-retro-high-light-smoke-grey')
+
+else: 
+        #vola= driver.find_element_by_xpath("//dict[@typename='SalesInformation']")
+        vola=soup.findAll(text=re.compile("volatility"))
+        #x = re.findall('[0-9]+',str(vola))
+        x= re.findall("\d+\.\d+",str(vola))
+        vola_list=[]
+        big_number = str(.1)
+        for value in x[1:]:
+         if value < big_number:
+            vola_list.append(value)
+        vol_val=vola_list[1]
+        date = soup.findAll(class_="chakra-container new-product-view css-vp2g1e")
+        text=str(date)
+       
+        x = re.findall('[0-9]+', text)
+        loc_year=[i for i, n in enumerate(x) if n == '2020'][1]
+        loc_month=(loc_year+1)
+        loc_day=(loc_year+2)
+        year=x[(loc_year)]
+        month=x[(loc_month)]
+        day=x[(loc_day)]
+        print(year)
+        print(month)
+        print(day)
+        num='-'.join([str(num) for num in [month, day, year]])
+        print(num)
+       # for item in text.split("\n"):
+           # if new_words in item:
+              #  print(item.strip())
+
+        #print(text)
+        #print(vola)
+        #print(x)
+#for tr in table_rows:
+#type(table_top)
+display(table_top)
+#driver.quit()
+#display(df)
+#duplicateRowsDF = df[df.duplicated(['Size'])]
+
+
+##if new_df.rows.duplicated().any():
+    #all_levels = new_df.rows.nlevels
+#if all_levels > 1:
+        #all_levels = range(all_levels)
+#new_df = new_df.groupby(axis=1, level=all_levels).sum()
+        
 
 #sneaker_price = soup.select("div.en-us.stat-value.stat-Last Sale")[0]
 #print(sneaker_price)
