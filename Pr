@@ -47,6 +47,10 @@ driver.find_element_by_xpath('//button[normalize-space()="View Sales"]').click()
 import datetime
 if driver.find_elements_by_class_name('all'):
     driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+
+
 time.sleep(5)
 soup = BeautifulSoup(driver.page_source,'html5lib')
 
@@ -82,17 +86,23 @@ if driver.find_elements_by_class_name('all'):
         two=(x[3])
         comb_vola=(numConcat(one, two))/100
         print(comb_vola)
+        vola=comb_vola
         y= re.findall('[0-9]+', text)
         print(y)
-        loc_year=y.index("2020")
+        loc_year=y.index("2021")
         loc_month=(loc_year-2)
         loc_day=(loc_year-1)
         year=y[(loc_year)]
         month=y[(loc_month)]
         day=y[(loc_day)]
         
-        reldate= '-'.join([str(num) for num in [month, day, year]])
+        reldate= '/'.join([str(num) for num in [month, day, year]])
+        date_format = "%m/%d/%Y"
+
+        reldate= datetime.datetime.strptime(reldate,date_format)
+        reldate=reldate.date()
         now_date= table_top.loc[1,"Date"]
+        print(now_date)
         now_month = now_date.split(' ')[1]
         now_month1 = now_month[0:3]
         now_day=now_date.split(' ')[2]
@@ -101,11 +111,39 @@ if driver.find_elements_by_class_name('all'):
         nowcomb_date=now_month1+ " " +now_day+ " "+now_year
 
         date_time_obj = datetime.datetime.strptime(nowcomb_date, '%b %d %Y')
-        print(date_time_obj.date())
+        current_date=date_time_obj.date()
+        delta=reldate-current_date
+        daysdrop=delta.days
+        table_top.drop_duplicates(subset=['Size'], inplace=True)
+        if "jordan" in searchTerm: 
+            zero_drop= 15
+        
+        elif "yeezy" in searchTerm: 
+            zero_drop= 20
+        elif "nike" in searchTerm: 
+            zero_drop= 12
+        else: 
+            zero_drop=13
+        if 0<daysdrop <=8:
+            value_counter =13
+            initial_val = value_counter- (daysdrop*(.9))
+            dailydrop=initial_val*vola
+            totaldrop=dailydrop*daysdrop+zero_drop
+        elif 9<=daysdrop <= 20:
+            value_counter=13
+            initial_val = (value_counter- (8*.9*vola)*8)
+            add_val= (1.8*vola)*(daysdrop-8)
+            totaldrop=initial_val+add_val+zero_drop
+            
+        elif 21 <= daysdrop <65:
+            initialval= ((21-(20*.91))*vola)*20
+            add_val= (daysdrop-20)*(1.1*vola)
+            totaldrop==initial_val+add_val+zero_drop
+        table_top['Subtracting Value']=str(totaldrop)
+        #table_top['Prediced Values']=float(table_top['Sale Price'])-table_top['Subtracting Value']
+        table_top['Predicted Values'] = table_top.apply(lambda x: x['Sale Price'] - x['Subtracting Value'], axis=1)
 
-
-        #date =find_date('view-source:https://stockx.com/air-jordan-1-retro-high-light-smoke-grey')
-
+        table_top.drop(['Sale Price','Date','Time'], axis = 1)
 else: 
         #vola= driver.find_element_by_xpath("//dict[@typename='SalesInformation']")
         vola=soup.findAll(text=re.compile("volatility"))
@@ -117,11 +155,14 @@ else:
          if value < big_number:
             vola_list.append(value)
         vol_val=vola_list[1]
+        vola=float(vol_val)
+        vola=vola*10
+        
         date = soup.findAll(class_="chakra-container new-product-view css-vp2g1e")
         text=str(date)
        
         x = re.findall('[0-9]+', text)
-        loc_year=[i for i, n in enumerate(x) if n == '2020'][1]
+        loc_year=[i for i, n in enumerate(x) if n == '2021'][1]
         loc_month=(loc_year+1)
         loc_day=(loc_year+2)
         year=x[(loc_year)]
@@ -130,8 +171,74 @@ else:
         print(year)
         print(month)
         print(day)
-        num='-'.join([str(num) for num in [month, day, year]])
-        print(num)
+        num='/'.join([str(num) for num in [month, day, year]])
+        date_format = "%m/%d/%Y"
+
+        reldate=datetime.datetime.strptime(num, date_format)
+        reldate=reldate.date()
+        print(reldate)
+        now_date= table_top.loc[1,"Date"]
+        print(now_date)
+        now_month = now_date.split(' ')[0]
+        now_month1 = now_month[0:3]
+        now_day=now_date.split(' ')[1]
+        now_day = now_day.replace(',','')
+        now_year=now_date.split(' ')[2]
+        nowcomb_date=now_month1+ " " +now_day+ " "+now_year
+
+        date_time_obj = datetime.datetime.strptime(nowcomb_date, '%b %d %Y')
+        current_date=date_time_obj.date()
+        delta=reldate-current_date
+        daysdrop=delta.days
+        print(delta.days)
+        print(daysdrop)
+        if "jordan" in searchTerm: 
+            zero_drop= 15
+        
+        elif "yeezy" in searchTerm: 
+            zero_drop= 20
+        elif "nike" in searchTerm: 
+            zero_drop= 12
+        else: 
+            zero_drop=13
+        if 0<daysdrop <=8:
+            value_counter =13
+            initial_val = value_counter- (daysdrop*(.9))
+            dailydrop=initial_val*vola
+            totaldrop=dailydrop*daysdrop+zero_drop
+        elif 9<=daysdrop <= 20:
+            value_counter=13
+            initial_val = (value_counter- (8*.9*vola)*8)
+            add_val= (1.8*vola) *(daysdrop-8)
+            totaldrop=initial_val+add_val+zero_drop
+            
+        elif 21 <= daysdrop <65:
+            initialval= ((21-(20*.91))*vola)*20
+            add_val= (daysdrop-20)*(1.1*vola)
+            totaldrop=initial_val+add_val+zero_drop
+        else: 
+            print("Invalid Restart Program and Enter a product that is releasing in less then 65 days and has not already released")
+        table_top['Sale Price'] = table_top['Sale Price'].map(lambda x: x.lstrip('$'))
+        table_top['Sale Price'] = pd.to_numeric(table_top['Sale Price'], downcast="float")
+        avg_saleval=table_top['Sale Price'].mean()
+        avg_saleval=avg_saleval-totaldrop
+        sizes=pd.Series(['7.0', '8.0', '9.0', '10.0','11.0','12.0','13.0'])
+        table_top['Size']=sizes
+        value_list=pd.Series([avg_saleval+10,avg_saleval-8,avg_saleval-4,avg_saleval-5,avg_saleval+4,avg_saleval+6,avg_saleval+7.5])
+        table_top['Predicted Values']=value_list
+        new_table_top=table_top.drop(['Sale Price','Date','Time'], axis = 1)
+        final_display=new_table_top.head(7)
+
+        #if daysdrop <= 4 
+           # dailydrop= 9.5*vola
+        
+       # elif 5 < daysdrop <=9
+          #  dailydrop= 7.3*vola
+        
+       # elif 10 =< daysdrop <= 20
+            #dailydrop = 5.7*vola
+        
+        #elif 
        # for item in text.split("\n"):
            # if new_words in item:
               #  print(item.strip())
@@ -141,7 +248,7 @@ else:
         #print(x)
 #for tr in table_rows:
 #type(table_top)
-display(table_top)
+display(final_display)
 #driver.quit()
 #display(df)
 #duplicateRowsDF = df[df.duplicated(['Size'])]
@@ -153,8 +260,3 @@ display(table_top)
         #all_levels = range(all_levels)
 #new_df = new_df.groupby(axis=1, level=all_levels).sum()
         
-
-#sneaker_price = soup.select("div.en-us.stat-value.stat-Last Sale")[0]
-#print(sneaker_price)
-
-
