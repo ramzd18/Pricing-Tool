@@ -14,25 +14,36 @@ sys.path.append('C:/users/Rpeddu/chromedriver_win32')
 from selenium import webdriver
 class Main:
 	if __name__ == "__main__":
+		
+def system_get_function():
+	val = input("Enter:your system directory for chromedriver")
+	try:
+		sys.path.append(val)
+	except:
+		System.out.println("Invalid path directory pointer location")
+		
+def url_getter():
 		Stockx_Search_Url= "https://www.stockx.com/"
-searchTerm = input("Enter the Search Term of the shoe exactly as it appears:")
-searchTerm = searchTerm.lower()
-count = len(searchTerm.split())
-print (count) 
-if count > 13:
-	print("Invalid entry, please enter the shoe name exactly as it appears on the Stockx website")
-if count <= 5: 
-	print("Invalid entry, please enter the shoe name exactly as with words like Air and Retro")
-for i in range(0, len(searchTerm), 1):
-         
-        # Changing the ith character
-        # to '-' if it's a space.
-        if (searchTerm[i] == ' '):
-            searchTerm = searchTerm.replace(searchTerm[i],'-')
-print (searchTerm)
-Stockx_Search_Url= "https://www.stockx.com/"
-url = Stockx_Search_Url+searchTerm
-print(url)
+	searchTerm = input("Enter the Search Term of the shoe exactly as it appears:")
+	searchTerm = searchTerm.lower()
+	count = len(searchTerm.split())
+	print (count) 
+	if count > 13:
+		print("Invalid entry, please enter the shoe name exactly as it appears on the Stockx website")
+	if count <= 5: 
+		print("Invalid entry, please enter the shoe name exactly as with words like Air and Retro")
+	for i in range(0, len(searchTerm), 1):
+
+		# Changing the ith character
+		# to '-' if it's a space.
+		if (searchTerm[i] == ' '):
+		    searchTerm = searchTerm.replace(searchTerm[i],'-')
+	print (searchTerm)
+	Stockx_Search_Url= "https://www.stockx.com/"
+	url = Stockx_Search_Url+searchTerm
+	print(url)
+	return url
+def site_data_scrapper():
 driver = webdriver.Chrome(executable_path='C:/users/Rpeddu/chromedriver_win32/chromedriver.exe')
 session = requests.Session()
 response = session.get(url)
