@@ -21,7 +21,6 @@ def system_get_function():
 		sys.path.append(val)
 	except:
 		System.out.println("Invalid path directory pointer location")
-		
 def url_getter():
 		Stockx_Search_Url= "https://www.stockx.com/"
 	searchTerm = input("Enter the Search Term of the shoe exactly as it appears:")
@@ -43,33 +42,8 @@ def url_getter():
 	url = Stockx_Search_Url+searchTerm
 	print(url)
 	return url
-def site_data_scrapper():
-driver = webdriver.Chrome(executable_path='C:/users/Rpeddu/chromedriver_win32/chromedriver.exe')
-session = requests.Session()
-response = session.get(url)
-driver.get(url)
-driver.maximize_window()
-time.sleep(10)
-#driver.find_element_by_class_name('css-14bs28v').click()
-#driver.find_element_by_class_name('css-1ianwbe').click()
-#driver.find_element_by_class_name('all').click()
-driver.find_element_by_xpath('//button[normalize-space()="View Sales"]').click()
-
-import datetime
-if driver.find_elements_by_class_name('all'):
-    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
-    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
-    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
-
-
-time.sleep(5)
-soup = BeautifulSoup(driver.page_source,'html5lib')
-
-table = soup.find_all('table')
-table_top = pd.read_html(str(table))[0]
-
-if driver.find_elements_by_class_name('all'):
-        table_top.drop_duplicates(subset='Size', keep="first")
+def html_scraper1(table_top):
+	 table_top.drop_duplicates(subset='Size', keep="first")
         vola = soup.findAll(class_="value")
         date = soup.findAll(class_="detail")
         text=str(date)
@@ -100,7 +74,7 @@ if driver.find_elements_by_class_name('all'):
         vola=comb_vola
         y= re.findall('[0-9]+', text)
         print(y)
-        loc_year=y.index("2021")
+        loc_year=y.index("2022")
         loc_month=(loc_year-2)
         loc_day=(loc_year-1)
         year=y[(loc_year)]
@@ -155,8 +129,8 @@ if driver.find_elements_by_class_name('all'):
         table_top['Predicted Values'] = table_top.apply(lambda x: x['Sale Price'] - x['Subtracting Value'], axis=1)
 
         table_top.drop(['Sale Price','Date','Time'], axis = 1)
-else: 
-        #vola= driver.find_element_by_xpath("//dict[@typename='SalesInformation']")
+def html_scraper2(table_top):
+	  #vola= driver.find_element_by_xpath("//dict[@typename='SalesInformation']")
         vola=soup.findAll(text=re.compile("volatility"))
         #x = re.findall('[0-9]+',str(vola))
         x= re.findall("\d+\.\d+",str(vola))
@@ -173,7 +147,7 @@ else:
         text=str(date)
        
         x = re.findall('[0-9]+', text)
-        loc_year=[i for i, n in enumerate(x) if n == '2021'][1]
+        loc_year=[i for i, n in enumerate(x) if n == '2022'][1]
         loc_month=(loc_year+1)
         loc_day=(loc_year+2)
         year=x[(loc_year)]
@@ -229,35 +203,51 @@ else:
             totaldrop=initial_val+add_val+zero_drop
         else: 
             print("Invalid Restart Program and Enter a product that is releasing in less then 65 days and has not already released")
-        table_top['Sale Price'] = table_top['Sale Price'].map(lambda x: x.lstrip('$'))
-        table_top['Sale Price'] = pd.to_numeric(table_top['Sale Price'], downcast="float")
-        avg_saleval=table_top['Sale Price'].mean()
-        avg_saleval=avg_saleval-totaldrop
-        sizes=pd.Series(['7.0', '8.0', '9.0', '10.0','11.0','12.0','13.0'])
-        table_top['Size']=sizes
-        value_list=pd.Series([avg_saleval+10,avg_saleval-8,avg_saleval-4,avg_saleval-5,avg_saleval+4,avg_saleval+6,avg_saleval+7.5])
-        table_top['Predicted Values']=value_list
-        new_table_top=table_top.drop(['Sale Price','Date','Time'], axis = 1)
-        final_display=new_table_top.head(7)
+	
+		
 
-        #if daysdrop <= 4 
-           # dailydrop= 9.5*vola
-        
-       # elif 5 < daysdrop <=9
-          #  dailydrop= 7.3*vola
-        
-       # elif 10 =< daysdrop <= 20
-            #dailydrop = 5.7*vola
-        
-        #elif 
-       # for item in text.split("\n"):
-           # if new_words in item:
-              #  print(item.strip())
+def site_data_scrapper():
+	driver = webdriver.Chrome(executable_path='C:/users/Rpeddu/chromedriver_win32/chromedriver.exe')
+	session = requests.Session()
+	response = session.get(url)
+	driver.get(url)
+	driver.maximize_window()
+	time.sleep(10)
+	#driver.find_element_by_class_name('css-14bs28v').click()
+	#driver.find_element_by_class_name('css-1ianwbe').click()
+	#driver.find_element_by_class_name('all').click()
+	driver.find_element_by_xpath('//button[normalize-space()="View Sales"]').click()
 
-        #print(text)
-        #print(vola)
-        #print(x)
-#for tr in table_rows:
+	import datetime
+	if driver.find_elements_by_class_name('all'):
+	    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+	    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+	    driver.find_element_by_xpath('//button[normalize-space()="Load More"]').click()
+
+
+	time.sleep(5)
+	soup = BeautifulSoup(driver.page_source,'html5lib')
+
+	table = soup.find_all('table')
+	table_top = pd.read_html(str(table))[0]
+
+	if driver.find_elements_by_class_name('all'):
+		html_scraper1(table_top)
+	else: 
+		html_scraper2(table_top)
+
+	table_top['Sale Price'] = table_top['Sale Price'].map(lambda x: x.lstrip('$'))
+	table_top['Sale Price'] = pd.to_numeric(table_top['Sale Price'], downcast="float")
+	avg_saleval=table_top['Sale Price'].mean()
+	avg_saleval=avg_saleval-totaldrop
+	sizes=pd.Series(['7.0', '8.0', '9.0', '10.0','11.0','12.0','13.0'])
+	table_top['Size']=sizes
+	value_list=pd.Series([avg_saleval+10,avg_saleval-8,avg_saleval-4,avg_saleval-5,avg_saleval+4,avg_saleval+6,avg_saleval+7.5])
+	table_top['Predicted Values']=value_list
+	new_table_top=table_top.drop(['Sale Price','Date','Time'], axis = 1)
+	final_display=new_table_top.head(7)
+
+      
 #type(table_top)
 display(final_display)
 #driver.quit()
