@@ -10,7 +10,6 @@ import time
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.action_chains import ActionChains
 
-sys.path.append('C:/users/Rpeddu/chromedriver_win32')
 from selenium import webdriver
 class Main:
 	if __name__ == "__main__":
@@ -250,13 +249,4 @@ def site_data_scrapper():
       
 #type(table_top)
 display(final_display)
-#driver.quit()
-#display(df)
-#duplicateRowsDF = df[df.duplicated(['Size'])]
 
-
-##if new_df.rows.duplicated().any():
-    #all_levels = new_df.rows.nlevels
-#if all_levels > 1:
-        #all_levels = range(all_levels)
-#new_df = new_df.groupby(axis=1, level=all_levels).sum()
