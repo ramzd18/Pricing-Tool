@@ -13,6 +13,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
 class Main:
 	if __name__ == "__main__":
+"""
+Appends chromedriver to system using its given location on host computer.
+"""
 		
 def system_get_function():
 	val = input("Enter:your system directory for chromedriver")
@@ -20,6 +23,11 @@ def system_get_function():
 		sys.path.append(val)
 	except:
 		System.out.println("Invalid path directory pointer location")
+"""
+Takes input as a shoe name and makes it a search term by making it lowercase and adding it to the standard stockxsearch term.
+Checks wheter input is a valid shoe by ensuring its length fits into certain parameters that are standard shoes
+@Returns: The complete search term.
+"""
 def url_getter():
 		Stockx_Search_Url= "https://www.stockx.com/"
 	searchTerm = input("Enter the Search Term of the shoe exactly as it appears:")
@@ -41,6 +49,12 @@ def url_getter():
 	url = Stockx_Search_Url+searchTerm
 	print(url)
 	return url
+"""
+Scrapts the first iteration of stockx htmly layout.
+Finds volatillity by using class value in the layout and scraps unwanted characters with the regex sub function.
+Finds date using class value and places it into date/month/year format.
+Uses the difference from release time and current date and the shoe type to create predictions on the shoes release price.
+"""
 def html_scraper1(table_top):
 	 table_top.drop_duplicates(subset='Size', keep="first")
         vola = soup.findAll(class_="value")
@@ -57,15 +71,15 @@ def html_scraper1(table_top):
         re.sub("-", "", str(x))
         def numConcat(num1, num2):
        
-        # Convert both the numbers to
-        # strings
-            num1 = str(num1)
-            num2 = str(num2)
-          
-        # Concatenate the strings
-            num1 += num2
-          
-            return int(num1)
+		# Convert both the numbers to
+		# strings
+		    num1 = str(num1)
+		    num2 = str(num2)
+
+		# Concatenate the strings
+		    num1 += num2
+
+		    return int(num1)
         one=(x[2])
         two=(x[3])
         comb_vola=(numConcat(one, two))/100
@@ -128,6 +142,12 @@ def html_scraper1(table_top):
         table_top['Predicted Values'] = table_top.apply(lambda x: x['Sale Price'] - x['Subtracting Value'], axis=1)
 
         table_top.drop(['Sale Price','Date','Time'], axis = 1)
+"""
+Scrapts the first iteration of stockx htmly layout.
+Finds volatillity by using class value in the layout and scraps unwanted characters with the regex sub function.
+Finds date using class value and places it into date/month/year format.
+Uses the difference from release time and current date and the shoe type to create predictions on the shoes release price.
+"""
 def html_scraper2(table_top):
 	  #vola= driver.find_element_by_xpath("//dict[@typename='SalesInformation']")
         vola=soup.findAll(text=re.compile("volatility"))
@@ -203,8 +223,11 @@ def html_scraper2(table_top):
         else: 
             print("Invalid Restart Program and Enter a product that is releasing in less then 65 days and has not already released")
 	
-		
-
+"""
+Uses chromedriver to createa an automated chrome window that opens up to specific url of the shoe inputted.
+Clicks button to expose sale data in stockx website and then uses previous scraping function to get the data.
+@Returns: The final table display with the price predictions for each size of shoe.
+"""
 def site_data_scrapper():
 	driver = webdriver.Chrome(executable_path='C:/users/Rpeddu/chromedriver_win32/chromedriver.exe')
 	session = requests.Session()
@@ -245,10 +268,10 @@ def site_data_scrapper():
 	table_top['Predicted Values']=value_list
 	new_table_top=table_top.drop(['Sale Price','Date','Time'], axis = 1)
 	final_display=new_table_top.head(7)
-
-      
-#type(table_top)
-display(final_display)
+	return final_display
+"""
+Turns the final display inputted into a csv file with the location specified by the user.
+"""
 def tocsv(final_display):
 	val_input= input("Enter the file location of where you would like to csv to go")
 	final_display.to_csv(val_input)
