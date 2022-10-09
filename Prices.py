@@ -249,4 +249,7 @@ def site_data_scrapper():
       
 #type(table_top)
 display(final_display)
+def tocsv(final_display):
+	val_input= input("Enter the file location of where you would like to csv to go")
+	final_display.to_csv(val_input)
 
