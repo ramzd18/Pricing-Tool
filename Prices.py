@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.action_chains import ActionChains
 
 from selenium import webdriver
-class Main:
+class Prices:
 	if __name__ == "__main__":
 """
 Appends chromedriver to system using its given location on host computer.
