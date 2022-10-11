@@ -228,7 +228,7 @@ Uses chromedriver to createa an automated chrome window that opens up to specifi
 Clicks button to expose sale data in stockx website and then uses previous scraping function to get the data.
 @Returns: The final table display with the price predictions for each size of shoe.
 """
-def site_data_scrapper():
+def site_data_scrapper(url):
 	driver = webdriver.Chrome(executable_path='C:/users/Rpeddu/chromedriver_win32/chromedriver.exe')
 	session = requests.Session()
 	response = session.get(url)
