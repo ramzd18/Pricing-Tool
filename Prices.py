@@ -137,11 +137,9 @@ def html_scraper1(table_top):
             initialval= ((21-(20*.91))*vola)*20
             add_val= (daysdrop-20)*(1.1*vola)
             totaldrop==initial_val+add_val+zero_drop
-        table_top['Subtracting Value']=str(totaldrop)
-        #table_top['Prediced Values']=float(table_top['Sale Price'])-table_top['Subtracting Value']
-        table_top['Predicted Values'] = table_top.apply(lambda x: x['Sale Price'] - x['Subtracting Value'], axis=1)
-
-        table_top.drop(['Sale Price','Date','Time'], axis = 1)
+	 else: 
+            print("Invalid Restart Program and Enter a product that is releasing in less then 65 days and has not already released")
+	return totaldrop       
 """
 Scrapts the first iteration of stockx htmly layout.
 Finds volatillity by using class value in the layout and scraps unwanted characters with the regex sub function.
@@ -222,6 +220,8 @@ def html_scraper2(table_top):
             totaldrop=initial_val+add_val+zero_drop
         else: 
             print("Invalid Restart Program and Enter a product that is releasing in less then 65 days and has not already released")
+	return totaldrop       
+
 	
 """
 Uses chromedriver to createa an automated chrome window that opens up to specific url of the shoe inputted.
